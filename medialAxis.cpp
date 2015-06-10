@@ -11,6 +11,8 @@
 #include <CGAL/Delaunay_triangulation_adaptation_traits_2.h>
 #include <CGAL/Delaunay_triangulation_adaptation_policies_2.h>
 
+#include "MedialGraph.h"
+
 // Definitions
 typedef CGAL::Exact_predicates_inexact_constructions_kernel                        Kernel;
 typedef CGAL::Delaunay_triangulation_2<Kernel>                                     Delaunay;
@@ -42,6 +44,22 @@ bool inside(const Point& p, const vector<Point>& shape, Kernel traits) {
   return false;
 }
 
+MedialGraph makeGraph(const Voronoi& v, const vector<Point>& shape) {
+  MedialGraph mg;
+  for (Voronoi::Edge_iterator it=v.edges_begin(); it!=v.edges_end(); it++) {
+    if (it->is_segment()) {
+      Point src = it->source()->point();
+      Point trg = it->target()->point();
+      if (inside(src, shape, Kernel()) &&
+          inside(trg, shape, Kernel())) {
+        mg.add(src, trg);
+//        cout << it->source()->point() << " " << it->target()->point() << endl;
+      }
+    }
+  }
+  return mg;
+}
+
 int main(int argc, char** argv) {
 
   // Get input file
@@ -64,15 +82,10 @@ int main(int argc, char** argv) {
   vd.insert(poly.begin(), poly.end());
 
   // Get internal voronoi diagram for medial axis  
-  for (Voronoi::Edge_iterator it=vd.edges_begin(); it!=vd.edges_end(); it++) {
-    if (it->is_segment()) {
-      Point src = it->source()->point();
-      Point trg = it->target()->point();
-      if (inside(src, poly, Kernel()) &&
-          inside(trg, poly, Kernel())) {
-        cout << it->source()->point() << " " << it->target()->point() << endl;
-      }
-    }
+  MedialGraph graph = makeGraph(vd, poly);
+  vector<Point> vvvvv = graph.dijkstra(poly[0]);
+  for (vector<Point>::iterator it=vvvvv.begin(); it!=vvvvv.end(); it++) {
+    cout << *it << endl;
   }
 
   return 0;
