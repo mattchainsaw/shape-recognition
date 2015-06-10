@@ -25,4 +25,4 @@ fi
 
 # show the medial axis
 # change /usr/.../matlab to matlab if not trial, or wherever you got it
-/usr/local/MATLAB/R2015a/bin/matlab -nodesktop -nosplash -q -r "visualize('$DATA','$MED_DATA');pause;exit"
+/usr/local/MATLAB/R2015a/bin/matlab -nodesktop -nosplash -r "visualize('$DATA','$MED_DATA');pause;exit"
