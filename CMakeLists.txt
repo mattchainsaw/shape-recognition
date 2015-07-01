@@ -10,6 +10,6 @@ set(SOURCE_FILES
     src/medialAxis.cpp
     src/Image.cpp)
 
-add_executable(shape_recognition ${SOURCE_FILES})
+add_executable(shape_recognition ${SOURCE_FILES} src/MedialGraph.cpp)
 
 target_link_libraries(shape_recognition CGAL gmp)   # -l flags for linking prog target
