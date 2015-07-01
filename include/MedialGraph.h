@@ -23,7 +23,7 @@ public:
             : location(p) {}
 
     bool operator<(const Vertex& other) const {
-        return return (other.location < location);
+        return (other.location < location);
     }
     bool operator>(const Vertex& other) const {
         return (other.location > location);
