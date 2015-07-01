@@ -7,22 +7,25 @@
 
 #define INF 10000.0
 
-double distance(Point a, Point b) {
-    return sqrt((b.x() - a.x())*(b.x() - a.x()) + (b.y() - a.y())*(b.y() - a.y()));
+double pointDistance(const Point& p, const Point& q) {
+    return std::sqrt((p.x() - q.x())*(p.x() - q.x()) + (p.y() - q.y())*(p.y() - q.y()));
+}
+
+bool inside(const Point& p, const std::vector<Point>& shape) {
+    return CGAL::bounded_side_2(shape.begin(), shape.end(), p, Kernel()) == CGAL::ON_BOUNDED_SIDE;
 }
 
 void MedialGraph::initialize(const Point& p) {
     for (Vertices::iterator it=vertices.begin(); it!=vertices.end(); it++) {
-        it->second.dist = (it->second.point() == p) ? 0:INF;
-        it->second.parent = Point(INF,INF);
-//        std::cout << "init " << it->second.dist << std::endl;
+        it->second.setDist((it->second.getLocation() == p) ? 0:INF);
+        it->second.setParent(Point(INF,INF));
     }
 }
 
 void MedialGraph::relax(const Point& u, const Point& v) {
-    if (vertices[v].dist > (vertices[u].dist + distance(u,v))) {
-        vertices[v].dist = vertices[u].dist + distance(u,v);
-        vertices[v].parent = vertices[u].point();
+    if (vertices[v].getDist() > (vertices[u].getDist() + pointDistance(u,v))) {
+        vertices[v].setDist(vertices[u].getDist() + pointDistance(u,v));
+        vertices[v].setParent(vertices[u].getLocation());
     }
 }
 
@@ -34,10 +37,24 @@ std::vector<Vertex> MedialGraph::getVertices() {
     return d;
 }
 
+MedialGraph::MedialGraph(const Voronoi &v, const std::vector<Point>& shape) {
+    for (Voronoi::Edge_iterator it=v.edges_begin(); it!=v.edges_end(); it++) {
+        if (it->is_segment()) {
+            Point src = it->source()->point();
+            Point trg = it->target()->point();
+            if (inside(src, shape)&&
+                inside(trg, shape)) {
+                add(src, trg);
+                std::cout << it->source()->point() << " " << it->target()->point() << std::endl;
+            }
+        }
+    }
+}
+
 void MedialGraph::add(const Point& p, const Point& q) {
-    if (vertices[p].point() != p)
+    if (vertices[p].getLocation() != p)
         vertices[p] = Vertex(p);
-    if (vertices[q].point() != q)
+    if (vertices[q].getLocation() != q)
         vertices[q] = Vertex(q);
     vertices[p].addNeighbor(q);
     vertices[q].addNeighbor(p);
@@ -53,9 +70,9 @@ std::vector<Vertex> MedialGraph::dijkstra(Point start) {
         std::pop_heap(heap.begin(), heap.end());
         Vertex vertex = heap.back();
         heap.pop_back();
-        v.push_back(vertex.point());
+        v.push_back(vertex.getLocation());
         for (Neighbors::iterator it=vertex.getNeighbors().begin(); it!=vertex.getNeighbors().end(); it++) {
-            relax(vertex.point(), it->first);
+            relax(vertex.getLocation(), it->first);
         }
     }
     return v;

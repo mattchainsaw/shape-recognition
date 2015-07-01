@@ -7,9 +7,10 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 link_directories(${CMAKE_SOURCE_DIR}/src)        # -L flags for linker
 
 set(SOURCE_FILES
+    src/MedialGraph.cpp
     src/medialAxis.cpp
     src/Image.cpp)
 
-add_executable(shape_recognition ${SOURCE_FILES} src/MedialGraph.cpp)
+add_executable(shape_recognition ${SOURCE_FILES})
 
 target_link_libraries(shape_recognition CGAL gmp)   # -l flags for linking prog target

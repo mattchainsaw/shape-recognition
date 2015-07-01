@@ -1,7 +1,4 @@
 #include "Image.h"
-#include <vector>
-#include <algorithm>
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 
 // using exact predicates and inexact constructor as that is what other files
 // use. Could probably be changed to int.
@@ -14,8 +11,9 @@ int Image::cross(const Point &O, const Point &A, const Point &B) {
 }
 
 Points Image::convex_hull(Points P) {
-    int n = P.size(), k = 0;
-    Points Hull((unsigned long) (2*n));
+    int k = 0;
+    unsigned long n = P.size();
+    Points Hull(2*n);
     std::sort(P.begin(), P.end());
     for (int i = 0; i < n; ++i) {
         while (k >= 2 && cross(Hull[k-2], Hull[k-1], P[i]) <= 0)
@@ -42,8 +40,6 @@ Points Image::polygon() {
     return convex_hull(p);
 }
 
-
-#include <iostream>
 std::ostream& operator<<(std::ostream& out, const Image& im) {
     BV s = im.getBV();
     for (int r=0; r<im.Rows(); ) {
