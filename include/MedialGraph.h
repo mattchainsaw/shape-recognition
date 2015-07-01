@@ -1,4 +1,5 @@
 #include <iostream> // debug
+#include <algorithm>
 #include <vector>
 #include <map>
 #include <cmath>
@@ -22,6 +23,7 @@ class Vertex {
     Neighbors neighbors;
   public:
     double dist;    // used for Dijkstra's
+    Point parent;
       
     Vertex(Point p = Point(0,0))
       : location(p) {}
@@ -53,7 +55,7 @@ typedef std::map<Point,Vertex> Vertices;  // individual points wil be graphs ver
 
 struct compare {
   bool operator()(const Vertex& v1, const Vertex& v2) {
-    return v1.dist > v2.dist;
+    return v1.dist < v2.dist;
   }
 };
 
@@ -65,12 +67,15 @@ class MedialGraph {
     void initialize(const Point& p) {
       for (Vertices::iterator it=vertices.begin(); it!=vertices.end(); it++) {
         it->second.dist = (it->second.point() == p) ? 0:INF;
+        it->second.parent = Point(INF,INF);
+//        std::cout << "init " << it->second.dist << std::endl;
       }
     }
 
     void relax(const Point& u, const Point& v) {
       if (vertices[v].dist > (vertices[u].dist + distance(u,v))) {
         vertices[v].dist = vertices[u].dist + distance(u,v);
+        vertices[v].parent = vertices[u].point();
       }
     }
 
@@ -94,12 +99,14 @@ class MedialGraph {
       vertices[q].addNeighbor(p);
     }
 
-    std::vector<Point> dijkstra(Point start) {
+    std::vector<Vertex> dijkstra(Point start) {
       initialize(start);
-      std::vector<Point> v;
+      std::vector<Vertex> v;
       std::vector<Vertex> heap = getVertices();
+      std::make_heap (heap.begin(), heap.end(), compare());
       while (!heap.empty()) {
-        std::make_heap (heap.begin(), heap.end(), compare());
+        std::sort_heap(heap.begin(), heap.end());
+        std::pop_heap(heap.begin(), heap.end());
         Vertex vertex = heap.back();
         heap.pop_back();
         v.push_back(vertex.point());
@@ -111,9 +118,6 @@ class MedialGraph {
     }
 
 };
-
-
-typedef std::map<Point,double> Neighbors; // map another vertex with a distance
 
 
 

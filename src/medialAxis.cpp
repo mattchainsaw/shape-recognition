@@ -38,10 +38,7 @@ void load(const char* str, vector<Point>& vp) {
 }
 
 bool inside(const Point& p, const vector<Point>& shape, Kernel traits) {
-  if (CGAL::bounded_side_2(shape.begin(), shape.end(), p, traits) ==
-      CGAL::ON_BOUNDED_SIDE)
-    return true;
-  return false;
+  return CGAL::bounded_side_2(shape.begin(), shape.end(), p, traits) == CGAL::ON_BOUNDED_SIDE;
 }
 
 MedialGraph makeGraph(const Voronoi& v, const vector<Point>& shape) {
@@ -53,7 +50,7 @@ MedialGraph makeGraph(const Voronoi& v, const vector<Point>& shape) {
       if (inside(src, shape, Kernel()) &&
           inside(trg, shape, Kernel())) {
         mg.add(src, trg);
-//        cout << it->source()->point() << " " << it->target()->point() << endl;
+        cout << it->source()->point() << " " << it->target()->point() << endl;
       }
     }
   }
@@ -69,7 +66,7 @@ int main(int argc, char** argv) {
   }
   else {
     cout << "Usage: " << endl;
-    cout << argv[0] << " {Data File}" << endl;
+    cout << "./" << argv[0] << " {Data File}" << endl;
     exit (EXIT_FAILURE);
   }
 
@@ -83,10 +80,12 @@ int main(int argc, char** argv) {
 
   // Get internal voronoi diagram for medial axis  
   MedialGraph graph = makeGraph(vd, poly);
-  vector<Point> vvvvv = graph.dijkstra(poly[0]);
-  for (vector<Point>::iterator it=vvvvv.begin(); it!=vvvvv.end(); it++) {
-    cout << *it << endl;
-  }
+  vector<Vertex> vvvvv = graph.dijkstra(poly[0]);
+  Point back = vvvvv.back().point();
+  vvvvv = graph.dijkstra(back);
+/*  for (vector<Vertex>::iterator it=vvvvv.begin(); it!=vvvvv.end(); it++) {
+    cout << (*it).parent << " " << (*it).point() << endl;
+  }*/
 
   return 0;
 }
