@@ -1,10 +1,7 @@
 // Standard library
 #include <fstream>
 #include <cstdlib>
-
 #include "MedialGraph.h"
-
-// Definitions
 
 using namespace std;
 
@@ -44,6 +41,10 @@ int main(int argc, char **argv) {
 
     // Get internal voronoi diagram for medial axis
     MedialGraph graph(vd, poly);
+
+    vector<Vertex> v = graph.dijkstra();
+    for (int i=0; i<v.size(); i++)
+        cout << v[i].getParent() << ' ' << v[i].getLocation() << endl;
 
     return 0;
 }

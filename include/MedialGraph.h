@@ -81,17 +81,20 @@ struct compare {
 
 class MedialGraph {
 private:
-
     Vertices vertices;
-    void initialize(const Point& p);
-    void relax(const Point& u, const Point& v);
+    Point head;
+    void initialize();
+    void relax(Vertex& u, Vertex& v);
     std::vector<Vertex> getVertices();
 public:
     MedialGraph() {}
     MedialGraph(const Voronoi& v, const std::vector<Point>& shape);
-    void add(const Point& p, const Point& q);
 
-    std::vector<Vertex> dijkstra(Point start);
+    Point Head() const {
+        return head;
+    }
+    void add(const Point& p, const Point& q);
+    std::vector<Vertex> dijkstra();
 
 };
 #endif // MEDIAL_GRAPH
