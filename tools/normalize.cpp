@@ -1,17 +1,25 @@
-//
-// takes in an input of data point and normalizes them to all be in range from 0 to 1
-//
-
+// takes in an input of data point and normalizes them to all be in range.
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <limits>
 #include <cmath>
-
 using namespace std;
 
-int main() {
-    ifstream file("data/maple");
+const int RANGE_MIN = 0;
+const int RANGE_MAX = 100;
+
+int main(int argc, char** argv) {
+    char *fileName;
+    if (argc == 2) {
+        fileName = argv[1];
+    }
+    else {
+        cout << "Usage: " << endl;
+        cout << "./" << argv[0] << " {Data File}" << endl;
+        exit(EXIT_FAILURE);
+    }
+    ifstream file(fileName);
     vector<double> X;
     vector<double> Y;
     double minX = numeric_limits<double>::max();
@@ -31,14 +39,13 @@ int main() {
     minY = abs(minY);
     maxX = abs(maxX + minX);
     maxY = abs(maxY + minY);
-
     for (int i=0; i<X.size(); i++) {
         // translate to all positive numbers
-        X[i] += minX;
-        Y[i] += minY;
-        // shrink down to between 0 and 1
-        X[i] *= 100/maxX;
-        Y[i] *= 100/maxY;
+        X[i] += minX + RANGE_MIN;
+        Y[i] += minY + RANGE_MIN;
+        // shrink down to between MIN and MAX
+        X[i] *= RANGE_MAX/maxX;
+        Y[i] *= RANGE_MAX/maxY;
         cout << X[i] << '\t' << Y[i] << endl;
     }
     return 0;

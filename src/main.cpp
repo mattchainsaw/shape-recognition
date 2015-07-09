@@ -1,7 +1,6 @@
-// Standard library
+#include <iostream>
 #include <fstream>
 #include <Medial.h>
-//#include "MedialGraph.h"
 
 using namespace std;
 
@@ -43,6 +42,7 @@ int main(int argc, char **argv) {
     // calculate EDF
     medial.CalculateEDF();
 
+    // View info
     cout << medial << endl;
 
     return 0;

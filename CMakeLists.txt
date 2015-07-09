@@ -8,6 +8,8 @@ link_directories(${CMAKE_SOURCE_DIR}/src)        # -L flags for linker
 # flags
 add_definitions(-std=c++11)
 
-add_executable(shape_recognition src/main.cpp)
+set(FILES src/Medial.cpp src/main.cpp)
+
+add_executable(shape_recognition ${FILES})
 
 target_link_libraries(shape_recognition CGAL gmp)   # -l flags for linking to exe target

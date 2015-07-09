@@ -10,9 +10,10 @@ typedef CGAL::Exact_predicates_inexact_constructions_kernel::Point_2 Point;
 typedef std::vector<std::vector<bool> > BV;
 typedef std::vector<Point> Points;
 
+// Class for turning Matlab binary images into polygons for medial axis
 class Image {
   private:
-    BV shape;
+    BV shape; // BW Image
     int rows;
     int cols;
 

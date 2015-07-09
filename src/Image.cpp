@@ -1,8 +1,4 @@
-// using exact predicates and inexact constructor as that is what other files
-// use. Could probably be changed to int.
-//typedef CGAL::Exact_predicates_inexact_constructions_kernel::Point_2 Point;
-//typedef std::vector<std::vector<bool> > BV;
-//typedef std::vector<Point> Points;
+#include "Image.h"
 
 int Image::cross(const Point &O, const Point &A, const Point &B) {
     return (A.x() - O.x()) * (B.y() - O.y()) - (A.y() - O.y()) * (B.x() - O.x());
