@@ -2,7 +2,7 @@
 #define MEDIAL_H
 
 // Turn on/off debugging logs
-//#define DEBUG
+#define DEBUG
 
 #include "MedialPoint.h"
 
@@ -40,12 +40,15 @@ private:
     void calculateRadius(MedialPoint* mp) {
         double min = std::numeric_limits<double>::max();
         double dist,x,y;
-        for (std::vector<Point>::iterator it =boundary.begin(); it!=boundary.end(); it++) {
+        for (std::vector<Point>::iterator it=boundary.begin(); it!=boundary.end(); it++) {
             x = it->x() - mp->getPoint().x();
             y = it->y() - mp->getPoint().y();
             dist = std::sqrt(x*x + y*y);
-            if (dist < min) dist = min;
+            if (dist < min) min = dist;
         }
+#ifdef DEBUG
+        std::cout << "Point " << mp->getPoint() << " had radius of " << dist << std::endl;
+#endif
         mp->setRadius(dist);
     }
 
