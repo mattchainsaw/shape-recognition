@@ -40,8 +40,6 @@ int main(int argc, char **argv) {
 
     // Get internal voronoi diagram for medial axis
     Medial medial(vd,poly);
-    // calculate radii
-    medial.CalculateRadii();
     // calculate EDF
     medial.CalculateEDF();
 
