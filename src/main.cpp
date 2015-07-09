@@ -1,12 +1,12 @@
 // Standard library
 #include <fstream>
-#include <cstdlib>
-#include "MedialGraph.h"
+#include <Medial.h>
+//#include "MedialGraph.h"
 
 using namespace std;
 
 // data input
-void load(const char *str, vector<Point> &vp) {
+void load(const char* str, vector<Point>& vp) {
     ifstream file(str);
     while (!file.is_open()) {
         cout << "Error finding file." << endl;
@@ -19,7 +19,6 @@ void load(const char *str, vector<Point> &vp) {
 }
 
 int main(int argc, char **argv) {
-
     // Get input file
     char *file;
     if (argc == 2) {
@@ -40,11 +39,13 @@ int main(int argc, char **argv) {
     vd.insert(poly.begin(), poly.end());
 
     // Get internal voronoi diagram for medial axis
-    MedialGraph graph(vd, poly);
+    Medial medial(vd,poly);
+    // calculate radii
+    medial.CalculateRadii();
+    // calculate EDF
+    medial.CalculateEDF();
 
-    vector<Vertex> v = graph.dijkstra();
-    for (int i=0; i<v.size(); i++)
-        cout << v[i].getParent() << ' ' << v[i].getLocation() << endl;
+    cout << medial << endl;
 
     return 0;
 }

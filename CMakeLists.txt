@@ -5,11 +5,9 @@ project(shape_recognition)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 # .cpp directory list
 link_directories(${CMAKE_SOURCE_DIR}/src)        # -L flags for linker
+# flags
+add_definitions(-std=c++11)
 
-set(SOURCE_FILES
-    src/MedialGraph.cpp
-    src/Image.cpp)
+add_executable(shape_recognition src/main.cpp)
 
-add_executable(shape_recognition src/main.cpp ${SOURCE_FILES})
-
-target_link_libraries(shape_recognition CGAL gmp)   # -l flags for linking prog target
+target_link_libraries(shape_recognition CGAL gmp)   # -l flags for linking to exe target

@@ -1,5 +1,3 @@
-#include "Image.h"
-
 // using exact predicates and inexact constructor as that is what other files
 // use. Could probably be changed to int.
 //typedef CGAL::Exact_predicates_inexact_constructions_kernel::Point_2 Point;
