@@ -37,8 +37,8 @@ int main() {
         X[i] += minX;
         Y[i] += minY;
         // shrink down to between 0 and 1
-        X[i] *= 1000/maxX;
-        Y[i] *= 1000/maxY;
+        X[i] *= 100/maxX;
+        Y[i] *= 100/maxY;
         cout << X[i] << '\t' << Y[i] << endl;
     }
     return 0;
