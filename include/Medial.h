@@ -30,7 +30,7 @@ private:
     void rid();
 
 public:
-    Medial(const Voronoi &v, const std::vector<Point>& shape);
+    Medial(const std::vector<Point>& shape);
     ~Medial();
     std::vector<MedialPoint*> getPoints() const;
     double CalculateEDF();

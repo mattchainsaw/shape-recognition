@@ -28,22 +28,14 @@ int main(int argc, char **argv) {
         cout << "./" << argv[0] << " {Data File}" << endl;
         exit(EXIT_FAILURE);
     }
-
     // load data for polygon
     vector<Point> poly;
     load(file, poly);
-
-    // Make voronoi diagram
-    Voronoi vd;
-    vd.insert(poly.begin(), poly.end());
-
     // Get internal voronoi diagram for medial axis
-    Medial medial(vd,poly);
+    Medial medial(poly);
     // calculate EDF
     medial.CalculateEDF();
-
     // View info
     cout << medial << endl;
-
     return 0;
 }

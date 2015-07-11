@@ -2,12 +2,32 @@
 #include <iostream>
 
 // Turn debugging log on and off
-#define DEBUG
+//#define DEBUG
+
+// Accuracy is the number of midpoints inserted into original boundary.
+// If 0, then no change will be made
+// otherwise X midpoints will be inserted into boundary
+#define ACCURACY 1
 
 bool Medial::inside(const Point& p, const std::vector<Point>& shape) {
     return CGAL::bounded_side_2(shape.begin(), shape.end(), p, Kernel()) == CGAL::ON_BOUNDED_SIDE;
 }
 
+void addAccuracy(std::vector<Point>& shape) {
+    if (ACCURACY > 0) {
+        double x,y;
+        for (int j=0; j<shape.size(); j+=1+ACCURACY) {
+            Point from = shape[j];
+            Point to = shape[(j+1) % shape.size()];
+            for (int i=0; i<ACCURACY; i++) {
+                x = (i+1)*(to.x() + from.x())/(ACCURACY+1);
+                y = (i+1)*(to.y() + from.y())/(ACCURACY+1);
+                Point mid(x,y);
+                shape.emplace(shape.begin() + j +  i, mid);
+            }
+        }
+    }
+}
 void Medial::calculateRadius(MedialPoint* mp) {
     double min = std::numeric_limits<double>::max();
     double dist,x,y;
@@ -21,7 +41,7 @@ void Medial::calculateRadius(MedialPoint* mp) {
         if (dist < min) min = dist;
     }
 #ifdef DEBUG
-        std::cout << "Point " << mp->getPoint() << " had radius of " << dist << std::endl;
+        std::cout << "Point " << mp->getPoint() << " had radius of " << min << std::endl;
 #endif
     mp->setRadius(min);
 }
@@ -61,8 +81,12 @@ void Medial::rid() {
     }
 }
 
-Medial::Medial(const Voronoi &v, const std::vector<Point>& shape) {
+Medial::Medial(const std::vector<Point>& shape) {
     boundary = shape;
+    addAccuracy(boundary);
+    // Make voronoi diagram
+    Voronoi v;
+    v.insert(boundary.begin(), boundary.end());
     Voronoi::Edge_iterator it;
     for (it=v.edges_begin(); it!=v.edges_end(); it++) {
         if (it->is_segment()) {
@@ -95,10 +119,13 @@ double Medial::CalculateEDF() {
     return CalculateEDF(mp);
 }
 
+// need to change from recursive to iterative and change return to void
+// finds points with only one neighbor. These are the end points of the medial axis.
+// Push ends to heap where compare is active neighbor size. if size is 1, then compute and update
 double Medial::CalculateEDF(MedialPoint* mp) {
     mp->beenAsked = true;
-    if (mp->neighbors().size() == 1) { // then we are on the outside
-        mp->setEDF(0);
+    if (mp->getNeighborSize() == 1) { // then we are on the outside
+        mp->setEDF(mp->getRadius());
     }
     else { // somewhere inside
         double d(0);
@@ -110,6 +137,10 @@ double Medial::CalculateEDF(MedialPoint* mp) {
                 double t = CalculateEDF(mp->neighbors()[i].first) + mp->neighbors()[i].second.squared_length();
                 if (d < t) d = t;
             }
+            else {
+                double t = mp->neighbors()[i].first->getEDF() + mp->neighbors()[i].second.squared_length();
+                if (d < t) d = t;
+            }
         }
         mp->setEDF(d);
     }
@@ -118,3 +149,7 @@ double Medial::CalculateEDF(MedialPoint* mp) {
 #endif
     return mp->getEDF();
 }
+
+// private member center is the point with highest EDF
+// from center find neighbors with highest EDF's and include these points
+// void Medial::Prune(const int& branches = 2)
