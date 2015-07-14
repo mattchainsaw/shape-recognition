@@ -16,8 +16,8 @@ int main(int argc, char** argv) {
     }
     else {
         cout << "Usage: " << endl;
-        cout << "./" << argv[0] << " {Data File}" << endl;
-        exit(EXIT_FAILURE);
+        cout << argv[0] << " {Data File}" << endl;
+        return 1;
     }
     ifstream file(fileName);
     vector<double> X;
