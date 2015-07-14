@@ -20,23 +20,37 @@ typedef CGAL::Voronoi_diagram_2<Delaunay,AT,AP>                                 
 class Medial {
 private:
 
+    // Boundary of points in order.
     std::vector<Point> boundary;
+    // after EDF is computed the focus is pointing to the center.
     MedialPoint* focus;
+    // All of the medial axis points together for easy access and deletew
     std::vector<MedialPoint*> safekeeping;
 
+    // Test to see whether of not a point is inside the polygon boundary
+    // Used in computing voronoi
     bool inside(const Point& p, const std::vector<Point>& shape);
+    // Calculates the radius of a medial point inside of the polygon
     void calculateRadius(MedialPoint* mp);
+    // Add a pair of points that resemble a line segment into the medial points
+    // If the points are already in the medial points, then there is just an update in connectivitiy
+    // The radius is also computed in this scope
     void add(const Point& p, const Point& q);
+    // helper for destructor
     void rid();
 
 public:
+    // Contructor
     Medial(const std::vector<Point>& shape);
+    // Destructor
     ~Medial();
+    // Returns a vector of pointers to all of the medial points
     std::vector<MedialPoint*> getPoints() const;
-    double CalculateEDF();
+    // Calculates the EDF for all point in the object.
+    void CalculateEDF();
     double CalculateEDF(MedialPoint* mp);
 };
-
+// output operator
 static std::ostream& operator<<(std::ostream& out, const Medial& medial) {
     std::vector<MedialPoint*> mp = medial.getPoints();
     for (int i=0; i<mp.size(); i++) {

@@ -2,6 +2,7 @@
 #define MEDIALPOINT_H
 
 #include <vector>
+#include <cmath>
 #include <limits>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 
@@ -11,44 +12,38 @@ typedef Kernel::Vector_2                                    Arrow;
 
 class MedialPoint {
 private:
+    // The coordinates of the point
     Point location;
+    // all of the points connecting neighbors
     std::vector<std::pair<MedialPoint*, Arrow> > connected;
-    int neighborSIZE;
+    // the points EDF
     double EDF;
+    // the points radius
     double radius;
+    // the points parent with respect to where it calculated its EDF
     MedialPoint* parent;
 
 public:
-    bool readyToDie;
-    bool beenAsked;
-    MedialPoint(const Point& point)
-            : location(point), neighborSIZE(0), EDF(-1.0), readyToDie(false), beenAsked(false) {}
-    Point getPoint() const {return location;}
-    void setPoint(const Point& p) {location = p;}
-    std::vector<std::pair<MedialPoint*, Arrow> > neighbors() const {return connected;}
-    void addNeighbor(MedialPoint* mp) {
-        Point neighLoc = mp->getPoint();
-        Arrow arrow(neighLoc,location);
-        std::pair<MedialPoint*, Arrow> newNeigh = std::make_pair(mp, arrow);
-        connected.push_back(newNeigh);
-        ++neighborSIZE;
-    }
-    void removeNeighbor(MedialPoint* mp) {
-        for (auto it = connected.begin(); it != connected.end(); it++) {
-            if (it->first == mp)
-                connected.erase(it);
-        }
-        delete mp;
-    }
-    int getNeighborSize() const {return neighborSIZE;}
-    void resetNeighborSize() {neighborSIZE = connected.size();}
-    double getEDF() const {return EDF;}
-    void   setEDF(const double& edf) {EDF = edf;}
-    double getRadius() const {return radius;}
-    void   setRadius(const double& r) {radius = r;}
-    MedialPoint* getParent() const {return parent;}
-    void setParent(MedialPoint* mp) {parent = mp;}
+    // Aux info
+    bool EDFisDone;
+    int N;
+    // Constructor
+    MedialPoint(const Point& point);
+    // Getters and Setters
+    Point getPoint() const;
+    std::vector<std::pair<MedialPoint*, Arrow> > neighbors() const;
+    double getEDF() const;
+    void   setEDF(const double& edf);
+    double getRadius() const;
+    void   setRadius(const double& r);
+    MedialPoint* getParent() const;
+    void setParent(MedialPoint* mp);
 
+    // Adds another medial point to the connectivity neighbors
+    void addNeighbor(MedialPoint* mp);
+    // returns a vector of medialPoints that have not yet calculated their EDF
+    std::vector<MedialPoint*> notDone();
+    // calculates the distance between two medial points
+    double dist(MedialPoint* mp);
 };
-
 #endif // MEDIALPOINT_H
