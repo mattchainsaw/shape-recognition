@@ -5,7 +5,7 @@
 using namespace std;
 
 // data input
-void load(const char* str, vector<Point>& vp) {
+void load(const char *str, vector<Point> &vp) {
     ifstream file(str);
     while (!file.is_open()) {
         cout << "Error finding file." << endl;

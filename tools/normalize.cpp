@@ -9,7 +9,7 @@ using namespace std;
 const int RANGE_MIN = 0;
 const int RANGE_MAX = 100;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     char *fileName;
     if (argc == 2) {
         fileName = argv[1];
@@ -27,25 +27,28 @@ int main(int argc, char** argv) {
     double maxX = numeric_limits<double>::min();
     double maxY = maxY;
     double _x, _y;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wloop-analysis"
     while (file >> _x >> _y) {
         X.push_back(_x);
         Y.push_back(_y);
-        minX = (minX > _x) ? _x:minX;
-        minY = (minY > _y) ? _y:minY;
-        maxX = (maxX < _x) ? _x:maxX;
-        maxY = (maxY < _y) ? _y:maxY;
+        minX = (minX > _x) ? _x : minX;
+        minY = (minY > _y) ? _y : minY;
+        maxX = (maxX < _x) ? _x : maxX;
+        maxY = (maxY < _y) ? _y : maxY;
     }
+#pragma clang diagnostic pop
     minX = abs(minX);
     minY = abs(minY);
     maxX = abs(maxX + minX);
     maxY = abs(maxY + minY);
-    for (int i=0; i<X.size(); i++) {
+    for (int i = 0; i < X.size(); i++) {
         // translate to all positive numbers
         X[i] += minX + RANGE_MIN;
         Y[i] += minY + RANGE_MIN;
         // shrink down to between MIN and MAX
-        X[i] *= RANGE_MAX/maxX;
-        Y[i] *= RANGE_MAX/maxY;
+        X[i] *= RANGE_MAX / maxX;
+        Y[i] *= RANGE_MAX / maxY;
         cout << X[i] << '\t' << Y[i] << endl;
     }
     return 0;

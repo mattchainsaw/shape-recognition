@@ -119,8 +119,8 @@ void Medial::CalculateEDF() {
     // other inner points
     while (!points.empty()) {
         for (MedialPoint* medialPoint : points) {
-            std::vector<MedialPoint *> children = medialPoint->notDone(); // <-- only element left to be computed in neighbors
-            for (MedialPoint *child : children) {
+            std::vector<MedialPoint*> children = medialPoint->notDone(); // <-- only element left to be computed in neighbors
+            for (MedialPoint* child : children) {
                 // Try to find EDF for child
                 child->N -= 1;
                 double EDF = child->dist(medialPoint) + medialPoint->getEDF();
@@ -148,7 +148,6 @@ void Medial::CalculateEDF() {
             points.push_back(temp);
         }
     }
- //   CalculateEDF(mp);
 }
 
 double Medial::CalculateEDF(MedialPoint* mp) {
