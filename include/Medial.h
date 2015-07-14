@@ -55,7 +55,10 @@ public:
     // Calculates the EDF for all point in the object.
     void CalculateEDF();
 
-    double CalculateEDF(MedialPoint *mp);
+    void Prune(const int& branches);
+
+private:
+    void Prune(const int& branches, MedialPoint* mp);
 };
 
 // output operator

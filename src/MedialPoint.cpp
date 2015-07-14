@@ -1,7 +1,7 @@
 #include "MedialPoint.h"
 
 MedialPoint::MedialPoint(const Point &point)
-        : location(point), EDF(-1.0), EDFisDone(false), N(0) { }
+        : location(point), EDF(std::numeric_limits<double>::max()), EDFisDone(false), N(0) { }
 
 // Getters and Setters
 Point MedialPoint::getPoint() const { return location; }
@@ -33,7 +33,7 @@ void MedialPoint::addNeighbor(MedialPoint *mp) {
 std::vector<MedialPoint *> MedialPoint::notDone() {
     std::vector<MedialPoint *> ND;
     for (int i = 0; i < connected.size(); i++) {
-        if (connected[i].first->EDF == -1)
+        if (connected[i].first->EDF == std::numeric_limits<double>::max())
             ND.push_back(connected[i].first);
     }
     return ND;
