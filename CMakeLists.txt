@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(shape_recognition)
+project(shape-recognition)
 
 # .h directory list
 include_directories(${CMAKE_SOURCE_DIR}/include)
