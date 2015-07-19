@@ -8,7 +8,7 @@ link_directories(${CMAKE_SOURCE_DIR}/src)        # -L flags for linker
 # flags
 add_definitions(-std=c++11)
 
-set(FILES src/MedialPoint.cpp src/Medial.cpp src/main.cpp)
+set(FILES src/MedialPoint.cpp src/MedialPath.cpp src/Medial.cpp src/main.cpp)
 
 add_executable(shape_recognition ${FILES})
 

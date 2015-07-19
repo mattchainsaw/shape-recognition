@@ -137,10 +137,9 @@ void Medial::CalculateEDF() {
 
 // private member focus is the point with highest EDF
 // from focus find neighbors with highest EDF's and include these points
-void Medial::Prune(const int& branches = 2) {
-    Prune(branches, focus);
-}
-
-void Medial::Prune(const int& branches, MedialPoint* mp) {
-    return;
+MedialPath Medial::Prune(const int& branches) {
+    MedialPath path(focus);
+    for (int i=0; i<branches;  i++)
+        path.addBranch();
+    return path;
 }

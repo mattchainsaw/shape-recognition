@@ -2,6 +2,7 @@
 #define MEDIAL_H
 
 #include "MedialPoint.h"
+#include "MedialPath.h"
 #include <vector>
 #include <cmath>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -55,10 +56,8 @@ public:
     // Calculates the EDF for all point in the object.
     void CalculateEDF();
 
-    void Prune(const int& branches);
+    MedialPath Prune(const int& branches = 2);
 
-private:
-    void Prune(const int& branches, MedialPoint* mp);
 };
 
 // output operator
