@@ -8,14 +8,13 @@
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::Point_2 Point;
-typedef Kernel::Vector_2 Arrow;
 
 class MedialPoint {
 private:
     // The coordinates of the point
     Point location;
     // all of the points connecting neighbors
-    std::vector<std::pair<MedialPoint *, Arrow> > connected;
+    std::vector<MedialPoint *> connected;
     // the points EDF
     double EDF;
     // the points radius
@@ -33,7 +32,7 @@ public:
     // Getters and Setters
     Point getPoint() const;
 
-    std::vector<std::pair<MedialPoint *, Arrow> > neighbors() const;
+    std::vector<MedialPoint *> neighbors() const;
 
     double getEDF() const;
 

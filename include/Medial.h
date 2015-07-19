@@ -66,7 +66,7 @@ static std::ostream &operator<<(std::ostream &out, const Medial &medial) {
     std::vector<MedialPoint *> mp = medial.getPoints();
     for (int i = 0; i < mp.size(); i++) {
         for (int j = 0; j < mp[i]->neighbors().size(); j++) {
-            out << mp[i]->getPoint() << " " << mp[i]->neighbors()[j].first->getPoint() << " " <<
+            out << mp[i]->getPoint() << " " << mp[i]->neighbors()[j]->getPoint() << " " <<
             mp[i]->getEDF() << " " << mp[i]->getRadius() << std::endl;
         }
     }

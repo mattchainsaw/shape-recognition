@@ -124,10 +124,10 @@ void Medial::CalculateEDF() {
         MedialPoint *medialPoint = points.back();
         points.pop_back();
         for (int i = 0; i < medialPoint->neighbors().size(); i++) {
-            double EDF = medialPoint->neighbors()[i].first->dist(medialPoint) + medialPoint->getEDF();
-            if (EDF < medialPoint->neighbors()[i].first->getEDF()) {
-                medialPoint->neighbors()[i].first->setEDF(EDF);
-                points.push_back(medialPoint->neighbors()[i].first);
+            double EDF = medialPoint->neighbors()[i]->dist(medialPoint) + medialPoint->getEDF();
+            if (EDF < medialPoint->neighbors()[i]->getEDF()) {
+                medialPoint->neighbors()[i]->setEDF(EDF);
+                points.push_back(medialPoint->neighbors()[i]);
             }
         }
         focus = medialPoint; // eventually center

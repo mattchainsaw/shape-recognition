@@ -6,7 +6,7 @@ MedialPoint::MedialPoint(const Point &point)
 // Getters and Setters
 Point MedialPoint::getPoint() const { return location; }
 
-std::vector<std::pair<MedialPoint *, Arrow> > MedialPoint::neighbors() const { return connected; }
+std::vector<MedialPoint *> MedialPoint::neighbors() const { return connected; }
 
 double MedialPoint::getEDF() const { return EDF; }
 
@@ -22,18 +22,15 @@ void MedialPoint::setParent(MedialPoint *mp) { parent = mp; }
 
 // Adds a neighbor to the medialpoint
 void MedialPoint::addNeighbor(MedialPoint *mp) {
-    Point neighLoc = mp->getPoint();
-    Arrow arrow(neighLoc, location);
-    std::pair<MedialPoint *, Arrow> newNeigh = std::make_pair(mp, arrow);
-    connected.push_back(newNeigh);
+    connected.push_back(mp);
 }
 
 // Gives all neighbors who have not received an EDF yet
 std::vector<MedialPoint *> MedialPoint::notDone() {
     std::vector<MedialPoint *> ND;
     for (int i = 0; i < connected.size(); i++) {
-        if (connected[i].first->EDF == std::numeric_limits<double>::max())
-            ND.push_back(connected[i].first);
+        if (connected[i]->EDF == std::numeric_limits<double>::max())
+            ND.push_back(connected[i]);
     }
     return ND;
 }
