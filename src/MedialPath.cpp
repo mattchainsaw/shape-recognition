@@ -1,11 +1,11 @@
 #include "MedialPath.h"
 
 void MedialPath::CalculateNext() {
-    MedialPoint* safe = new MedialPoint(Point(0,0));
+    MedialPoint *safe = new MedialPoint(Point(0, 0));
     safe->setEDF(-1);
-    MedialPoint* temp = safe;
-    for (MedialPoint* medialPoint : path) {
-        for (MedialPoint* options : medialPoint->neighbors()) {
+    MedialPoint *temp = safe;
+    for (MedialPoint *medialPoint : path) {
+        for (MedialPoint *options : medialPoint->neighbors()) {
             if (!options->checkInEMA() && options->getEDF() > temp->getEDF()) {
                 temp = options;
             }
@@ -15,7 +15,7 @@ void MedialPath::CalculateNext() {
     delete safe;
 }
 
-MedialPath::MedialPath(MedialPoint* mp)
+MedialPath::MedialPath(MedialPoint *mp)
         : center(mp), walker(mp) {
     mp->putInEMA();
     next = center->neighbors()[0];
@@ -27,12 +27,12 @@ void MedialPath::addBranch() {
     walker = next;
     path.push_back(walker);
     walker->putInEMA();
-    MedialPoint* nextInBranch;
+    MedialPoint *nextInBranch;
     while (walker->neighbors().size() != 1) { // while not on boundary point
-        MedialPoint* safe = new MedialPoint(Point(0,0));
+        MedialPoint *safe = new MedialPoint(Point(0, 0));
         safe->setEDF(-1);
         nextInBranch = safe;
-        for (MedialPoint* neigh : walker->neighbors()) {
+        for (MedialPoint *neigh : walker->neighbors()) {
             if (!neigh->checkInEMA() && neigh->getEDF() > nextInBranch->getEDF()) {
                 nextInBranch = neigh;
             }
@@ -45,4 +45,4 @@ void MedialPath::addBranch() {
     CalculateNext();
 }
 
-std::vector<MedialPoint*> MedialPath::Path() const { return path; }
+std::vector<MedialPoint *> MedialPath::Path() const { return path; }

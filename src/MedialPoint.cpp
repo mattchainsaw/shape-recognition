@@ -16,23 +16,9 @@ double MedialPoint::getRadius() const { return radius; }
 
 void MedialPoint::setRadius(const double &r) { radius = r; }
 
-MedialPoint *MedialPoint::getParent() const { return parent; }
-
-void MedialPoint::setParent(MedialPoint *mp) { parent = mp; }
-
 // Adds a neighbor to the medialpoint
 void MedialPoint::addNeighbor(MedialPoint *mp) {
     connected.push_back(mp);
-}
-
-// Gives all neighbors who have not received an EDF yet
-std::vector<MedialPoint *> MedialPoint::notDone() {
-    std::vector<MedialPoint *> ND;
-    for (int i = 0; i < connected.size(); i++) {
-        if (connected[i]->EDF == std::numeric_limits<double>::max())
-            ND.push_back(connected[i]);
-    }
-    return ND;
 }
 
 // compute distance between two medial points

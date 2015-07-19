@@ -19,8 +19,6 @@ private:
     double EDF;
     // the points radius
     double radius;
-    // the points parent with respect to where it calculated its EDF
-    MedialPoint *parent;
     // used for pruning function
     bool isInEMA;
 
@@ -42,15 +40,8 @@ public:
 
     void setRadius(const double &r);
 
-    MedialPoint *getParent() const;
-
-    void setParent(MedialPoint *mp);
-
     // Adds another medial point to the connectivity neighbors
     void addNeighbor(MedialPoint *mp);
-
-    // returns a vector of medialPoints that have not yet calculated their EDF
-    std::vector<MedialPoint *> notDone();
 
     // calculates the distance between two medial points
     double dist(MedialPoint *mp);

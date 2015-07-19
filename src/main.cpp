@@ -23,12 +23,12 @@ int main(int argc, char **argv) {
     if (argc == 2) {
         file = argv[1];
         medialOut = "out.medial";
-        pathOut   = "out.path";
+        pathOut = "out.path";
     }
     else if (argc == 3) {
         file = argv[1];
         medialOut = argv[2];
-        pathOut   = "out.path";
+        pathOut = "out.path";
     }
     else if (argc == 4) {
         file = argv[1];
