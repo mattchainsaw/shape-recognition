@@ -4,7 +4,7 @@
 // Accuracy is the number of midpoints inserted into original boundary.
 // If 0, then no change will be made
 // otherwise X midpoints will be inserted into boundary
-#define ACCURACY 0
+#define ACCURACY 1
 
 struct compa {
     bool operator()(MedialPoint* mp1, MedialPoint* mp2) const {
@@ -105,15 +105,13 @@ std::vector<MedialPoint*> Medial::getPoints() const {
 // branch   = points that are connected to more than two others
 void Medial::CalculateEDF() {
     std::vector<MedialPoint *> points;
-    std::vector<MedialPoint *> nextLayer;
 
     // Calculate EDF for boundary points
     // Their EDF is their radius and is done being computed
     // They are pushed onto vector points
     for (MedialPoint *medialPoint : safekeeping) {
-        if (medialPoint->N == 1) { // boundary points
+        if (medialPoint->neighbors().size() == 1) { // boundary points
             medialPoint->setEDF(medialPoint->getRadius());
-            medialPoint->EDFisDone = true;
             points.push_back(medialPoint);
         }
     }
@@ -137,8 +135,8 @@ void Medial::CalculateEDF() {
 }
 
 
-// private member center is the point with highest EDF
-// from center find neighbors with highest EDF's and include these points
+// private member focus is the point with highest EDF
+// from focus find neighbors with highest EDF's and include these points
 void Medial::Prune(const int& branches = 2) {
     Prune(branches, focus);
 }

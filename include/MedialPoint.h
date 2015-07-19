@@ -22,11 +22,10 @@ private:
     double radius;
     // the points parent with respect to where it calculated its EDF
     MedialPoint *parent;
+    // used for pruning function
+    bool isInEMA;
 
 public:
-    // Aux info
-    bool EDFisDone;
-    int N;
 
     // Constructor
     MedialPoint(const Point &point);
@@ -56,6 +55,10 @@ public:
 
     // calculates the distance between two medial points
     double dist(MedialPoint *mp);
+
+    void putInEMA();
+
+    bool checkInEMA() const;
 };
 
 #endif // MEDIALPOINT_H

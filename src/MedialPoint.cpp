@@ -1,7 +1,7 @@
 #include "MedialPoint.h"
 
 MedialPoint::MedialPoint(const Point &point)
-        : location(point), EDF(std::numeric_limits<double>::max()), EDFisDone(false), N(0) { }
+        : location(point), EDF(std::numeric_limits<double>::max()), isInEMA(false) { }
 
 // Getters and Setters
 Point MedialPoint::getPoint() const { return location; }
@@ -26,7 +26,6 @@ void MedialPoint::addNeighbor(MedialPoint *mp) {
     Arrow arrow(neighLoc, location);
     std::pair<MedialPoint *, Arrow> newNeigh = std::make_pair(mp, arrow);
     connected.push_back(newNeigh);
-    ++N;
 }
 
 // Gives all neighbors who have not received an EDF yet
@@ -45,3 +44,7 @@ double MedialPoint::dist(MedialPoint *mp) {
     double y = location.y() - mp->getPoint().y();
     return std::sqrt(x * x + y * y);
 }
+
+void MedialPoint::putInEMA() { isInEMA = true; }
+
+bool MedialPoint::checkInEMA() const { return isInEMA; }
