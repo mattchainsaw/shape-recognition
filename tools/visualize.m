@@ -1,30 +1,49 @@
-function out = visualize(file, data)
+function out = visualize(file, data, prun)
     poly = importdata(file);
     med  = importdata(data);
+    path = importdata(prun);
 
-% plot the poly in black
+    % plot shape with medial axis
+    figure;
+    subplot(2,2,1);
+    % plot the poly with black boundary
     x = poly(:,1);
     y = poly(:,2);
     fill(x,y,'w');
     hold on;
-    pause;
-
     % plot medial axis in red
     xx = [med(:,1), med(:,3)]';
     yy = [med(:,2), med(:,4)]';
     plot(xx,yy,'-r');
-    pause;
-    
+    title('Medial Axis');
+
+    % plot pruning output
+    subplot(2,2,2);
+    fill(x,y,'w');
+    hold on;
+    % plot branches in solid blue
+    xxx = [path(:,1), path(:,3)]';
+    yyy = [path(:,2), path(:,4)]';
+    plot(xxx,yyy,'-b');
+    title('Pruning');
+
+    % plot EDF data
+    subplot(2,2,3);
+    fill(x,y,'w');
+    hold on;
+    plot(xx,yy,'-r');
     % EDF (Black) and radii (blue)
     EDF_x = med(:,1);
     EDF_y = med(:,2);
     EDF_val = num2str(med(:,5));
     text(EDF_x, EDF_y, EDF_val);
-    pause;
+    title('EDF Data');
     
+    % plot radii
+    subplot(2,2,4);
     R = med(:,6);
     drawCircle(EDF_x,EDF_y, R); %Just use the same x and y
-    pause;
+    title('Radii');
     
     out = true;
 end
