@@ -115,21 +115,22 @@ void Medial::CalculateEDF() {
             points.push_back(medialPoint);
         }
     }
-    // While there are still points in the vector points, take out the medial points and try to compute EDF's for inner
-    // points. Once the inner points only have one neighbor left, they are pushed onto the vector to help compute
-    // other inner points
+    // pop the point with smallest edf and compute neighbors edf's until empty
     while (!points.empty()) {
         // sorts so smalled EDF is in back()
-        std::sort(points.begin(), points.end(), compa());
-        MedialPoint *medialPoint = points.back();
-        points.pop_back();
+        std::vector<MedialPoint*>::iterator medIter = std::min(points.begin(), points.end());
+        MedialPoint* medialPoint = *medIter;
         for (int i = 0; i < medialPoint->neighbors().size(); i++) {
             double EDF = medialPoint->neighbors()[i]->dist(medialPoint) + medialPoint->getEDF();
             if (EDF < medialPoint->neighbors()[i]->getEDF()) {
                 medialPoint->neighbors()[i]->setEDF(EDF);
+                // if point is already in vector, erase it and push back
+                std::vector<MedialPoint*>::iterator iter = std::find(points.begin(), points.end(), medialPoint->neighbors()[i]);
+                if (iter != points.end()) points.erase(iter);
                 points.push_back(medialPoint->neighbors()[i]);
             }
         }
+        points.erase(medIter);
         focus = medialPoint; // eventually center
     }
 }
