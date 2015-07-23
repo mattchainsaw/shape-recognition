@@ -45,7 +45,7 @@ private:
 
 public:
     // Constructor
-    Medial(const std::vector<Point> &shape);
+    Medial(std::vector<Point> &shape, const unsigned int &acc);
 
     // Destructor
     ~Medial();
@@ -56,7 +56,7 @@ public:
     // Calculates the EDF for all point in the object.
     void CalculateEDF();
 
-    MedialPath Prune(const int& branches = 2);
+    MedialPath Prune(const unsigned int &branches = 2);
 
 };
 

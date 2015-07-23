@@ -4,6 +4,21 @@
 
 using namespace std;
 
+// The number of branches to find from the pruning function
+// Change this value for more or less branches
+const unsigned int NUMBER_OF_BRANCHES = 2;
+
+// If you want more accuracy, change this to a 1 or 2.
+// Default is set at 0.
+// If the number is raised, midpoints will be inserted into the boundary
+// to help see the shape.
+const unsigned int ACCURACY = 0;
+
+// default output file info
+string DEFAULT_OUTPUT_NAME            = "out";
+string DEFAULT_MEDIAL_INFO_EXTENSION  = ".medial";
+string DEFAULT_PRUNING_PATH_EXTENSION = ".path";
+
 // data input
 void load(const char *str, vector<Point> &vp) {
     ifstream file(str);
@@ -19,16 +34,16 @@ void load(const char *str, vector<Point> &vp) {
 
 int main(int argc, char **argv) {
     // Get input file
-    const char *file, *medialOut, *pathOut;
+    string file, pathOut, medialOut;
     if (argc == 2) {
         file = argv[1];
-        medialOut = "out.medial";
-        pathOut = "out.path";
+        medialOut = (DEFAULT_OUTPUT_NAME + DEFAULT_MEDIAL_INFO_EXTENSION);
+        pathOut   = (DEFAULT_OUTPUT_NAME + DEFAULT_PRUNING_PATH_EXTENSION);
     }
     else if (argc == 3) {
         file = argv[1];
-        medialOut = argv[2];
-        pathOut = "out.path";
+        medialOut = (argv[2] + DEFAULT_MEDIAL_INFO_EXTENSION);
+        pathOut   = (argv[2] + DEFAULT_PRUNING_PATH_EXTENSION);
     }
     else if (argc == 4) {
         file = argv[1];
@@ -44,21 +59,25 @@ int main(int argc, char **argv) {
     }
     // load data for polygon
     vector<Point> poly;
-    load(file, poly);
+    load(file.c_str(), poly);
     // Get internal voronoi diagram for medial axis
-    Medial medial(poly);
+    Medial medial(poly, ACCURACY);
     // calculate EDF
     medial.CalculateEDF();
-    MedialPath path = medial.Prune();
+    // Pruning function
+    MedialPath path = medial.Prune(NUMBER_OF_BRANCHES);
 
     ofstream outFile;
-    outFile.open(medialOut);
+    outFile.open(medialOut.c_str());
     outFile << medial << endl;
     outFile.close();
 
-    outFile.open(pathOut);
+    outFile.open(pathOut.c_str());
     outFile << path << endl;
     outFile.close();
+
+    cout << "Medial information has been written to " << medialOut << endl;
+    cout << "Pruning path has been written to " << pathOut << endl;
 
     return 0;
 }

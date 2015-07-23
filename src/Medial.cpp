@@ -1,11 +1,6 @@
 #include "Medial.h"
 #include <queue>
 
-// Accuracy is the number of midpoints inserted into original boundary.
-// If 0, then no change will be made
-// otherwise X midpoints will be inserted into boundary
-#define ACCURACY 1
-
 struct compa {
     bool operator()(MedialPoint* mp1, MedialPoint* mp2) const {
         return mp1->getEDF() > mp2->getEDF();
@@ -16,15 +11,15 @@ bool Medial::inside(const Point& p, const std::vector<Point>& shape) {
     return CGAL::bounded_side_2(shape.begin(), shape.end(), p, Kernel()) == CGAL::ON_BOUNDED_SIDE;
 }
 
-void addAccuracy(std::vector<Point>& shape) {
-    if (ACCURACY > 0) {
+void addAccuracy(std::vector<Point>& shape, const unsigned int& acc) {
+    if (acc > 0) {
         double x,y;
-        for (int j=0; j<shape.size(); j+=1+ACCURACY) {
+        for (int j=0; j<shape.size(); j+=1+acc) {
             Point from = shape[j];
             Point to = shape[(j+1) % shape.size()];
-            for (int i=0; i<ACCURACY; i++) {
-                x = (i+1)*(to.x() + from.x())/(ACCURACY+1);
-                y = (i+1)*(to.y() + from.y())/(ACCURACY+1);
+            for (int i=0; i<acc; i++) {
+                x = (i+1)*(to.x() + from.x())/(acc+1);
+                y = (i+1)*(to.y() + from.y())/(acc+1);
                 Point mid(x,y);
                 shape.emplace(shape.begin() + j +  i, mid);
             }
@@ -72,9 +67,9 @@ void Medial::rid() {
     }
 }
 
-Medial::Medial(const std::vector<Point>& shape) {
+Medial::Medial(std::vector<Point> &shape, const unsigned int& acc) {
     boundary = shape;
-    addAccuracy(boundary);
+    addAccuracy(boundary, acc);
     // Make voronoi diagram
     Voronoi v;
     v.insert(boundary.begin(), boundary.end());
@@ -138,9 +133,9 @@ void Medial::CalculateEDF() {
 
 // private member focus is the point with highest EDF
 // from focus find neighbors with highest EDF's and include these points
-MedialPath Medial::Prune(const int& branches) {
+MedialPath Medial::Prune(const unsigned int& branches) {
     MedialPath path(focus);
-    for (int i=0; i<branches;  i++)
+    for (unsigned int i=0; i<branches;  i++)
         path.addBranch();
     return path;
 }
