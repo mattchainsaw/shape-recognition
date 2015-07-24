@@ -33,12 +33,9 @@ public:
 // output operator
 static std::ostream &operator<<(std::ostream &out, const MedialPath &medial) {
     std::vector<MedialPoint *> mp = medial.Path();
-    for (MedialPoint *M : mp) {
-        for (MedialPoint *P : M->neighbors()) {
-            if (P->checkInEMA()) {
-                out << M->getPoint() << " " << P->getPoint() << std::endl;
-            }
-        }
+    out << mp[0]->getPoint() << " " << mp[1]->getPoint() << std::endl;
+    for (int i=1; i< mp.size()-1; i++) {
+        out << mp[i]->getPoint() << " " << mp[i+1]->getPoint() << std::endl;
     }
     return out;
 }

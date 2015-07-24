@@ -5,14 +5,11 @@
 #include "MedialPath.h"
 #include <vector>
 #include <cmath>
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Delaunay_triangulation_2.h>
 #include <CGAL/Voronoi_diagram_2.h>
 #include <CGAL/Delaunay_triangulation_adaptation_traits_2.h>
 #include <CGAL/Delaunay_triangulation_adaptation_policies_2.h>
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
-typedef Kernel::Point_2 Point;
 typedef CGAL::Delaunay_triangulation_2<Kernel> Delaunay;
 typedef CGAL::Delaunay_triangulation_adaptation_traits_2<Delaunay> AT;
 typedef CGAL::Delaunay_triangulation_caching_degeneracy_removal_policy_2<Delaunay> AP;
@@ -43,9 +40,11 @@ private:
     // helper for destructor
     void rid();
 
+    void setCenter();
+
 public:
     // Constructor
-    Medial(std::vector<Point> &shape, const unsigned int &acc);
+    Medial(std::vector<Point> &shape, const bool &acc);
 
     // Destructor
     ~Medial();

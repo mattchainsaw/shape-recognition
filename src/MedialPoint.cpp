@@ -1,7 +1,7 @@
 #include "MedialPoint.h"
 
 MedialPoint::MedialPoint(const Point &point)
-        : location(point), EDF(std::numeric_limits<double>::max()), isInEMA(false) { }
+        : location(point), EDF(std::numeric_limits<double>::max()), isInEMA(false), done(false) { }
 
 // Getters and Setters
 Point MedialPoint::getPoint() const { return location; }

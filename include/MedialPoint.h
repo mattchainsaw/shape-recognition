@@ -24,6 +24,8 @@ private:
 
 public:
 
+    bool done;
+
     // Constructor
     MedialPoint(const Point &point);
 

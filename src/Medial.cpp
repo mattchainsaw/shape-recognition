@@ -1,31 +1,42 @@
 #include "Medial.h"
 #include <queue>
 
-struct compa {
-    bool operator()(MedialPoint* mp1, MedialPoint* mp2) const {
-        return mp1->getEDF() > mp2->getEDF();
+std::vector<MedialPoint *>::iterator ready(std::vector<::MedialPoint *> &pts) {
+    std::vector<MedialPoint *>::iterator looper;
+    std::vector<MedialPoint *>::iterator m = pts.begin();
+    double d(std::numeric_limits<double>::max());
+    double D = d;
+    for (looper = pts.begin(); looper != pts.end(); looper++) {
+        int n(0);
+        for (MedialPoint *mp : (*looper)->neighbors()) {
+            if (!mp->done) {
+                ++n;
+            }
+            else
+                if (d > mp->getEDF() + mp->dist(*looper)) d = mp->getEDF() + mp->dist(*looper);
+        }
+        if (n == 1 && D > d) {
+            m = looper;
+            D = d;
+        }
     }
-};
+    return m;
+}
 
 bool Medial::inside(const Point& p, const std::vector<Point>& shape) {
     return CGAL::bounded_side_2(shape.begin(), shape.end(), p, Kernel()) == CGAL::ON_BOUNDED_SIDE;
 }
 
-void addAccuracy(std::vector<Point>& shape, const unsigned int& acc) {
-    if (acc > 0) {
-        double x,y;
-        for (int j=0; j<shape.size(); j+=1+acc) {
-            Point from = shape[j];
-            Point to = shape[(j+1) % shape.size()];
-            for (int i=0; i<acc; i++) {
-                x = (i+1)*(to.x() + from.x())/(acc+1);
-                y = (i+1)*(to.y() + from.y())/(acc+1);
-                Point mid(x,y);
-                shape.emplace(shape.begin() + j +  i, mid);
-            }
-        }
+void addAccuracy(std::vector<Point>& shape) {
+    double x,y;
+    for (int j=0; j<shape.size(); j+=2) {
+        Point from = shape[j];
+        Point to = shape[(j+1) % shape.size()];
+        Point mid = CGAL::midpoint(to,from);
+        shape.emplace(shape.begin() + j, mid);
     }
 }
+
 void Medial::calculateRadius(MedialPoint* mp) {
     double min = std::numeric_limits<double>::max();
     double dist,x,y;
@@ -67,9 +78,16 @@ void Medial::rid() {
     }
 }
 
-Medial::Medial(std::vector<Point> &shape, const unsigned int& acc) {
+void Medial::setCenter() {
+   for (int i=0; i<safekeeping.size(); i++) {
+        if (focus->getEDF() < safekeeping[i]->getEDF())
+            focus = safekeeping[i];
+    }
+}
+
+Medial::Medial(std::vector<Point> &shape, const bool &acc) {
     boundary = shape;
-    addAccuracy(boundary, acc);
+    if (acc) addAccuracy(boundary);
     // Make voronoi diagram
     Voronoi v;
     v.insert(boundary.begin(), boundary.end());
@@ -99,8 +117,38 @@ std::vector<MedialPoint*> Medial::getPoints() const {
 // connect  = points that connect two others
 // branch   = points that are connected to more than two others
 void Medial::CalculateEDF() {
-    std::vector<MedialPoint *> points;
+    // Calculate EDF for boundary points
+    // Their EDF is their radius and is done being computed
+    // They are pushed onto vector points
+    for (MedialPoint *medialPoint : safekeeping) {
+        if (medialPoint->neighbors().size() == 1) { // boundary points
+            medialPoint->setEDF(medialPoint->getRadius());
+            medialPoint->done = true;
+        }
+    }
 
+    // copy safekeeping so we can get rid of points without ruining safekeeping
+    std::vector<MedialPoint *> points = safekeeping;
+    std::vector<MedialPoint *>::iterator it;
+    for (it = points.begin(); it != points.end(); ) {
+        if ((*it)->done) it = points.erase(it);
+        else ++it;
+    }
+    while (!points.empty()) {
+        it = ready(points);
+        double EDF(0);
+        for (MedialPoint *mp : (*it)->neighbors()) {
+            if (mp->done) {
+                double temp = mp->dist(*it) + mp->getEDF();
+                if (temp > EDF) EDF = temp;
+            }
+        }
+        (*it)->setEDF(EDF);
+        (*it)->done = true;
+        it = points.erase(it);
+    }
+    focus = (*it);
+/*
     // Calculate EDF for boundary points
     // Their EDF is their radius and is done being computed
     // They are pushed onto vector points
@@ -112,12 +160,20 @@ void Medial::CalculateEDF() {
     }
     // pop the point with smallest edf and compute neighbors edf's until empty
     while (!points.empty()) {
-        // sorts so smalled EDF is in back()
         std::vector<MedialPoint*>::iterator medIter = std::min(points.begin(), points.end());
         MedialPoint* medialPoint = *medIter;
+        medialPoint->done = true;
+
+        int active(0);
+        for (MedialPoint *mp : medialPoint->neighbors())
+            if (!mp->done) ++active;
+
+        if (active == 1)
+
         for (int i = 0; i < medialPoint->neighbors().size(); i++) {
             double EDF = medialPoint->neighbors()[i]->dist(medialPoint) + medialPoint->getEDF();
-            if (EDF < medialPoint->neighbors()[i]->getEDF()) {
+            if (medialPoint->neighbors()[i]->getEDF() == std::numeric_limits<double>::max()
+                || (!medialPoint->neighbors()[i]->done && EDF > medialPoint->neighbors()[i]->getEDF())) {
                 medialPoint->neighbors()[i]->setEDF(EDF);
                 // if point is already in vector, erase it and push back
                 std::vector<MedialPoint*>::iterator iter = std::find(points.begin(), points.end(), medialPoint->neighbors()[i]);
@@ -126,8 +182,9 @@ void Medial::CalculateEDF() {
             }
         }
         points.erase(medIter);
-        focus = medialPoint; // eventually center
     }
+    */
+    //setCenter();
 }
 
 
@@ -135,7 +192,9 @@ void Medial::CalculateEDF() {
 // from focus find neighbors with highest EDF's and include these points
 MedialPath Medial::Prune(const unsigned int& branches) {
     MedialPath path(focus);
-    for (unsigned int i=0; i<branches;  i++)
+    for (unsigned int i=0; i<branches; i++) {
         path.addBranch();
+        std::cout << i << std::endl;
+    }
     return path;
 }

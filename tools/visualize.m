@@ -15,6 +15,8 @@ function out = visualize(file, data, prun)
     xx = [med(:,1), med(:,3)]';
     yy = [med(:,2), med(:,4)]';
     plot(xx,yy,'-r');
+    % show center
+    plot(path(1,1),path(1,2),'ok');
     title('Medial Axis');
 
     % plot pruning output
@@ -44,6 +46,14 @@ function out = visualize(file, data, prun)
     R = med(:,6);
     drawCircle(EDF_x,EDF_y, R); %Just use the same x and y
     title('Radii');
+
+
+    figure;
+    fill(x,y,'w');
+    hold on;
+    plot(xx,yy,'-r');
+    text(EDF_x, EDF_y, EDF_val);
+    title('EDF Data');
     
     out = true;
 end

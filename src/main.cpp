@@ -6,13 +6,10 @@ using namespace std;
 
 // The number of branches to find from the pruning function
 // Change this value for more or less branches
-const unsigned int NUMBER_OF_BRANCHES = 2;
+const unsigned int NUMBER_OF_BRANCHES = 4;
 
-// If you want more accuracy, change this to a 1 or 2.
-// Default is set at 0.
-// If the number is raised, midpoints will be inserted into the boundary
-// to help see the shape.
-const unsigned int ACCURACY = 0;
+// If you want more accuracy, set this to true
+const bool ACCURACY = true;
 
 // default output file info
 string DEFAULT_OUTPUT_NAME            = "out";
@@ -65,7 +62,7 @@ int main(int argc, char **argv) {
     // calculate EDF
     medial.CalculateEDF();
     // Pruning function
-    MedialPath path = medial.Prune(NUMBER_OF_BRANCHES);
+    MedialPath path = medial.Prune(7);
 
     ofstream outFile;
     outFile.open(medialOut.c_str());
