@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     // calculate EDF
     medial.CalculateEDF();
     // Pruning function
-    MedialPath path = medial.Prune(7);
+    MedialPath path = medial.Prune(NUMBER_OF_BRANCHES);
 
     ofstream outFile;
     outFile.open(medialOut.c_str());

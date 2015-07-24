@@ -11,7 +11,10 @@ void MedialPath::CalculateNext() {
             }
         }
     }
-    next = temp;
+    if (temp == safe)
+        next = nullptr;
+    else
+        next = temp;
     delete safe;
 }
 
@@ -24,6 +27,7 @@ MedialPath::MedialPath(MedialPoint *mp)
 }
 
 void MedialPath::addBranch() {
+    if (next == nullptr) return;
     std::cout << "Adding branch starting at " << next->getPoint();
     walker = next;
     path.push_back(walker);

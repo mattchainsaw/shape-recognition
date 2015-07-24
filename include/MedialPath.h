@@ -35,7 +35,17 @@ static std::ostream &operator<<(std::ostream &out, const MedialPath &medial) {
     std::vector<MedialPoint *> mp = medial.Path();
     out << mp[0]->getPoint() << " " << mp[1]->getPoint() << std::endl;
     for (int i=1; i< mp.size()-1; i++) {
-        out << mp[i]->getPoint() << " " << mp[i+1]->getPoint() << std::endl;
+        if (mp[i]->neighbors().size() == 1) { // end of branch
+            MedialPoint* nextRoot = mp[i+1]->neighbors()[0];
+            for (MedialPoint* neigh : mp[i+1]->neighbors()) {
+                if (neigh->checkInEMA() && neigh->getEDF() > nextRoot->getEDF())
+                    nextRoot = neigh;
+            }
+            out << nextRoot->getPoint() << " " << mp[i+1]->getPoint() << std::endl;
+
+        }
+        else
+            out << mp[i]->getPoint() << " " << mp[i+1]->getPoint() << std::endl;
     }
     return out;
 }
