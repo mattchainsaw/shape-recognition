@@ -25,6 +25,7 @@ private:
 public:
 
     bool done;
+    int neighborsDone;
 
     // Constructor
     MedialPoint(const Point &point);

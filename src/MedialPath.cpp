@@ -28,7 +28,6 @@ MedialPath::MedialPath(MedialPoint *mp)
 
 void MedialPath::addBranch() {
     if (next == nullptr) return;
-    std::cout << "Adding branch starting at " << next->getPoint();
     walker = next;
     path.push_back(walker);
     walker->putInEMA();
@@ -47,7 +46,6 @@ void MedialPath::addBranch() {
         path.push_back(walker);
         delete safe;
     }
-    std::cout << " and ending at " << walker->getPoint() << std::endl;
     CalculateNext();
 }
 
